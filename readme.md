@@ -15,27 +15,45 @@ User Stories
 
 * As an administrator, I need the ability to add a product to the system
    * Done, tested
+   * Available via a POST to http://localhost:8080/products
 * As an administrator, I need the ability to update a product's definition in the system
    * Done, tested
+   * Available via a PUT to http://localhost:8080/products/{id}
 * As an administrator, I need the ability to delete a product from the system
    * Done, tested
+   * Available via a DELETE on http://localhost:8080/products/{id}
 * As an administrator, I need the ability to set the initial inventory for the product in the system
    * Done, tested (with create and/or update)
+   * Available via either:
+      * POST to http://localhost:8080/products to create it with pre-sent inventory
+      * PUT to http://localhost:8080/products to adjust the inventory directly after an item has been created
+      * POST to http://localhost:8080/restock/orders with a properly-configured request after an item has been created
 * As an administrator, I need the ability to reorder products to increase the inventory level
    * If you simply want update stock level, then a PUT works
    * Instead, I created a RestockOrder...this currently is immediately effective, but could be asyncronous (need copperation from warehouse, etc)
+   * Available via a POST to http://localhost:8080/restock/orders with a properly-configured request
 * As a user, I need the ability to see all products in the system
    * Done, tested
+   * Available via a GET to http://localhost:8080/products
 * As a user, I need the ability to order one or more products for purchase
    * Done, tested
+   * Available via a POST to http://localhost:8080/orders
 * As a user, I need the ability to specify a shipping address for my order
    * Done, tested (part of representation)
+   * Available via a POST to http://localhost:8080/orders (during initial create)
 * As a user, I need the ability to specify a billing address for my order
    * Done, tested (part of representation)
+   * Available via a POST to http://localhost:8080/orders (during initial create)
 * As a user, I need the ability to view my past orders
    * Done, tested
+   * Available via a GET to http://localhost:8080/orders?user={username}
 * As a user, I need the ability to search for a product
    * Done, tested
+   * Available via a GET to any of:
+      * http://localhost:8080/products/search/findByNameContainingAndPriceLessThan?name={partial name}&price={max price}
+      * http://localhost:8080/products/search/findByNameContaining?name={partial name}
+      * http://localhost:8080/products/search/findByDescriptionContaining?desc={partial description}
+
 
 Product
 -------
