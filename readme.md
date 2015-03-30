@@ -1,3 +1,4 @@
+
 Order System
 ============
 
@@ -65,11 +66,12 @@ Expectations
 * You are free to choose any IDE that supports the above technology stack on an
   OS of your choice
 * The database will be MySQL
+  * There's a database-init.sql file to initialize this, and an sample config in application.properties that you can modify to use MySQL
 * The system will expose a set of REST APIs that addresses the requirements above
 * A user interface is NOT necessary
 * Unit tests must be written (using either Junit or TestNG)
 * The entire source code should be shared back with us
-   * Pleasesendsourcecodeorlink(GitHuborBitbucket)to prabal.ghosh@pb.com
+   * Please send source code or link(GitHub or Bitbucket)to prabal.ghosh@pb.com
    * The entire exercise must be completed and returned by Monday, 30th March, 2015
 ￼￼
 
