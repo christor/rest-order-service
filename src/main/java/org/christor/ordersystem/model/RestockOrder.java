@@ -14,6 +14,11 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Builder;
 import org.springframework.data.rest.core.annotation.RestResource;
 
+/**
+ * Represents an administrators request to restock a number of items.
+ * 
+ * @author crued
+ */
 @Entity
 @Data
 @Builder
