@@ -1,6 +1,25 @@
+REST Order System:
+==================
 
-Order System
-============
+This is my first real attempt to using Spring Boot, Spring MVC, and Spring Data
+API outside of scripted tutorials. 
+
+This was a great exercise to learn these parts of Spring framework, since it 
+involved a database, REST interface, and based on my own desire to be as close 
+to "five-star" REST as I could get. 
+
+The RepositoryRestResource looked incredibly promising as a start,
+however it didn't seem to provide a simple mechanism for customizing what happens
+during a POST, PUT, etc. or how to validate these requests and cause side-effects
+(I found documentation on  event listeners, but these were troublesome to implement).
+As a result, the /orders resource is implemented as a @RestController (since it 
+needed customization) while the /products resource is implemented using a 
+RepositryRestResource. I plan to keep my eye on this and see whether things get
+clearer with time, however I might steer clear of using these outside of 
+learning exercises until then.
+
+Order System Requirement:
+=========================
 
 Wednesday, March 25, 2015 9:41 AM
 
