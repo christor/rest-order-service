@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.christor.ordersystem.OrderSystem;
-import org.christor.ordersystem.model.CustomerOrder;
 import org.christor.ordersystem.model.Product;
+import org.christor.ordersystem.model.RestockOrder;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -48,7 +48,7 @@ public class RestockOrdersResourceTest {
 
     private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
-    private final List<CustomerOrder> orderList = new ArrayList<>();
+    private final List<RestockOrder> orderList = new ArrayList<>();
     private final List<Product> productsList = new ArrayList<>();
 
     @Autowired
@@ -96,15 +96,11 @@ public class RestockOrdersResourceTest {
         this.productsList.forEach(p -> {
             p.updateUri(baseUrlProvider.getBaseUrl());
         });
-        this.orderList.add(ordersRepository.save(CustomerOrder.builder()
-                .name("ralph")
-                .address("328 Chauncey Street, Apartment 3B, Bensonhurst, NY 11214")
+        this.orderList.add(ordersRepository.save(RestockOrder.builder()
                 .orderDate(new Date())
                 .products(convertProductListToStringList())
                 .build()));
-        this.orderList.add(ordersRepository.save(CustomerOrder.builder()
-                .name("alice")
-                .address("328 Chauncey Street, Apartment 3B, Bensonhurst, NY 11214")
+        this.orderList.add(ordersRepository.save(RestockOrder.builder()
                 .orderDate(new Date())
                 .products(convertProductListToStringList())
                 .build()));
@@ -125,13 +121,11 @@ public class RestockOrdersResourceTest {
     @Test
     public void readOrderOneAtATime() throws Exception {
         for (int i = 0; i < orderList.size(); i++) {
-            final CustomerOrder order = this.orderList.get(i);
+            final RestockOrder order = this.orderList.get(i);
             mockMvc.perform(get("/restock/orders/" + (i + firstOrderId())).accept(contentType))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(contentType))
                     .andExpect(jsonPath("$.id", is(order.getId().intValue())))
-                    .andExpect(jsonPath("$.name", is(order.getName())))
-                    .andExpect(jsonPath("$.address", is(order.getAddress())))
                     .andExpect(jsonPath("$.products", hasSize(getProductList(order).size())))
                     .andExpect(jsonPath("$.orderDate", is(order.getOrderDate().getTime())));
         }
@@ -150,12 +144,10 @@ public class RestockOrdersResourceTest {
                 .andExpect(content().contentType(contentType))
                 .andExpect(jsonPath("$.content", hasSize(2)));
         for (int i = 0; i < orderList.size(); i++) {
-            final CustomerOrder order = this.orderList.get(i);
+            final RestockOrder order = this.orderList.get(i);
             result.andExpect(status().isOk())
                     .andExpect(content().contentType(contentType))
                     .andExpect(jsonPath("$.content[" + i + "].id", is(order.getId().intValue())))
-                    .andExpect(jsonPath("$.content[" + i + "].name", is(order.getName())))
-                    .andExpect(jsonPath("$.content[" + i + "].address", is(order.getAddress())))
                     .andExpect(jsonPath("$.content[" + i + "].products", hasSize(getProductList(order).size())))
                     .andExpect(jsonPath("$.content[" + i + "].orderDate", is(order.getOrderDate().getTime())));
         }
@@ -166,9 +158,7 @@ public class RestockOrdersResourceTest {
     public void createSimpleOrder() throws Exception {
 
         int expectedId = firstOrderId().intValue() + orderList.size();
-        final CustomerOrder orderToAdd = CustomerOrder.builder()
-                .name("ed")
-                .address("328 Chauncey Street, Apartment 4B, Bensonhurst, NY 11214")
+        final RestockOrder orderToAdd = RestockOrder.builder()
                 .orderDate(new Date())
                 .products(convertProductListToStringList())
                 .build();
@@ -189,8 +179,6 @@ public class RestockOrdersResourceTest {
         mockMvc.perform(get("/restock/orders/" + expectedId).accept(contentType))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
-                .andExpect(jsonPath("$.name", is(orderToAdd.getName())))
-                .andExpect(jsonPath("$.address", is(orderToAdd.getAddress())))
                 .andExpect(jsonPath("$.products", hasSize(getProductList(orderToAdd).size())))
                 .andExpect(jsonPath("$.orderDate", is(orderToAdd.getOrderDate().getTime())));
 
@@ -207,9 +195,7 @@ public class RestockOrdersResourceTest {
         products.addAll(convertProductListToStringList());
         products.addAll(convertProductListToStringList());
         int expectedId = firstOrderId().intValue() + orderList.size();
-        final CustomerOrder orderToAdd = CustomerOrder.builder()
-                .name("ed")
-                .address("328 Chauncey Street, Apartment 4B, Bensonhurst, NY 11214")
+        final RestockOrder orderToAdd = RestockOrder.builder()
                 .orderDate(new Date())
                 .products(products)
                 .build();
@@ -230,8 +216,6 @@ public class RestockOrdersResourceTest {
         mockMvc.perform(get("/restock/orders/" + expectedId).accept(contentType))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
-                .andExpect(jsonPath("$.name", is(orderToAdd.getName())))
-                .andExpect(jsonPath("$.address", is(orderToAdd.getAddress())))
                 .andExpect(jsonPath("$.products", hasSize(getProductList(orderToAdd).size())))
                 .andExpect(jsonPath("$.orderDate", is(orderToAdd.getOrderDate().getTime())));
 
@@ -243,8 +227,7 @@ public class RestockOrdersResourceTest {
     @Test
     public void createMalformedProductBody() throws Exception {
 
-        final CustomerOrder productToAdd = CustomerOrder.builder()
-                .name("womp womp womp")
+        final RestockOrder productToAdd = RestockOrder.builder()
                 .build();
         String productJson = json(productToAdd + "}");
 
@@ -258,8 +241,7 @@ public class RestockOrdersResourceTest {
     @Test
     public void createWithIncorrectContentType() throws Exception {
 
-        final CustomerOrder productToAdd = CustomerOrder.builder()
-                .name("womp womp womp")
+        final RestockOrder productToAdd = RestockOrder.builder()
                 .build();
         String productJson = json(productToAdd);
 
@@ -270,7 +252,7 @@ public class RestockOrdersResourceTest {
                 .andExpect(status().isUnsupportedMediaType());
     }
 
-    private static List<Product> getProductList(final CustomerOrder orderToAdd) {
+    private static List<Product> getProductList(final RestockOrder orderToAdd) {
         List<Product> products = orderToAdd.getProducts();
         if (products == null) {
             products = Collections.EMPTY_LIST;

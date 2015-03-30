@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.christor.ordersystem.model.CustomerOrder;
+import org.christor.ordersystem.model.RestockOrder;
 import org.christor.ordersystem.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,13 +31,13 @@ public class RestockOrdersRestResource {
     private ProductsRestRepository productsRepository;
 
     @RequestMapping(method = RequestMethod.GET)
-    public Page<CustomerOrder> getOrderList(Pageable pageable) {
+    public Page<RestockOrder> getOrderList(Pageable pageable) {
         return ordersRepository.findAll(pageable);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity getRestockOrderById(@PathVariable("id") Long id) {
-        CustomerOrder entity = ordersRepository.findOne(id);
+        RestockOrder entity = ordersRepository.findOne(id);
         if (entity == null) {
             return ResponseEntity.notFound().build();
         } else {
@@ -46,7 +46,7 @@ public class RestockOrdersRestResource {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity createRestockOrder(@RequestBody CustomerOrder order) throws URISyntaxException {
+    public ResponseEntity createRestockOrder(@RequestBody RestockOrder order) throws URISyntaxException {
 
         List<Product> products = order.getProducts();
 
