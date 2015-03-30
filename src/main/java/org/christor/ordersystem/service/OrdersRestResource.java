@@ -2,10 +2,8 @@ package org.christor.ordersystem.service;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.christor.ordersystem.model.CustomerOrder;
 import org.christor.ordersystem.model.Product;
@@ -20,6 +18,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Provides a RESTful service for operations on Order entities.
+ * 
+ * @author crued
+ */
 @RestController
 @RequestMapping("orders")
 public class OrdersRestResource {
@@ -33,6 +36,14 @@ public class OrdersRestResource {
     @Autowired
     private ProductsRestRepository productsRepository;
 
+    /**
+     * Returns a paged list of results for all orders, or (if a user is specified)
+     * all orders for a given user.
+     * 
+     * @param user optional parameter indicating the user to match.
+     * @param pageable the current paging state to drive which results are returned.
+     * @return 
+     */
     @RequestMapping(method = RequestMethod.GET)
     public Page<CustomerOrder> getOrderList(@RequestParam(required = false, value = "user") String user, Pageable pageable) {
         if (user == null) {
@@ -42,6 +53,12 @@ public class OrdersRestResource {
         }
     }
 
+    /**
+     * Returns a single Order, whose id is specified, or responds with a 404.
+     * 
+     * @param id the order id.
+     * @return a representation of the order.
+     */
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity getOrderById(@PathVariable("id") Long id) {
         CustomerOrder entity = ordersRepository.findOne(id);
@@ -52,6 +69,17 @@ public class OrdersRestResource {
         }
     }
 
+    /**
+     * Attempts to create an order. This will either succeed and return a 201 (created)
+     * along with a location header indicating the URL where this entity can be
+     * retrieved, or responds with BAD REQUEST (400) if there is insufficient stock
+     * on any of the items in the order. As a side-effect, the stock level for all 
+     * items in a successfully-created order are adjusted accordingly.
+     * 
+     * @param order A representation of the order to create.
+     * @return a response indicating if the creation of the order succeeded.
+     * @throws URISyntaxException 
+     */
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity createOrder(@RequestBody CustomerOrder order) throws URISyntaxException {
 
@@ -89,6 +117,13 @@ public class OrdersRestResource {
         return ResponseEntity.created(new URI(baseUrlFilter.getBaseUrl() + "orders/" + newId)).build();
     }
 
+    /**
+     * A helper function to find the product id based on its URL.
+     * There's probably a nicer way than this...
+     * 
+     * @param p the product
+     * @return the id
+     */
     private static Long getProductId(Product p) {
         String href = p.getHref();
         int lastSlash = href.lastIndexOf("/");

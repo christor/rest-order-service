@@ -17,6 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Provides a RESTful interface to allow an administrator to request that items
+ * be re-stocked. This implementation immediately adjusts stock levels, however 
+ * in a real-world situation these would probably sit in the system a while as
+ * unfulfilled requests until the products actually appear in a warehouse somewhere.
+ * 
+ * @author crued
+ */
 @RestController
 @RequestMapping("restock/orders")
 public class RestockOrdersRestResource {
@@ -30,11 +38,22 @@ public class RestockOrdersRestResource {
     @Autowired
     private ProductsRestRepository productsRepository;
 
+    /**
+     * Returns all requests for restocking
+     * 
+     * @param pageable
+     * @return 
+     */
     @RequestMapping(method = RequestMethod.GET)
     public Page<RestockOrder> getOrderList(Pageable pageable) {
         return ordersRepository.findAll(pageable);
     }
 
+    /**
+     * Returns an individual request to restock
+     * @param id
+     * @return 
+     */
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity getRestockOrderById(@PathVariable("id") Long id) {
         RestockOrder entity = ordersRepository.findOne(id);
@@ -45,6 +64,14 @@ public class RestockOrdersRestResource {
         }
     }
 
+    /**
+     * Creates a new restock order, responding with 201 created and a location
+     * header indicating the location of the new order.
+     * 
+     * @param order a representation of the restock order.
+     * @return a response with a status code and location header indicating the outcome
+     * @throws URISyntaxException if an error occurred building the URI for this
+     */
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity createRestockOrder(@RequestBody RestockOrder order) throws URISyntaxException {
 
@@ -71,6 +98,13 @@ public class RestockOrdersRestResource {
         return ResponseEntity.created(new URI(baseUrlFilter.getBaseUrl() + "restock/orders/" + newId)).build();
     }
 
+    /**
+     * A helper function to find the product id based on its URL.
+     * There's probably a nicer way than this...
+     * 
+     * @param p the product
+     * @return the id
+     */
     private static Long getProductId(Product p) {
         String href = p.getHref();
         int lastSlash = href.lastIndexOf("/");

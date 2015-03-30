@@ -10,14 +10,21 @@ import javax.servlet.ServletResponse;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+/**
+ * This filter is used as a component that can be injected into other spring 
+ * components to provide the base URL for this app. It is used to make URLs in
+ * representations match the URLs relative to the user's request.
+ * 
+ * (I imagine there's a Spring MVC system-level property I might find for this, 
+ * but I didn't see it).
+ * 
+ * @author crued
+ */
 @Component
 @Data
 public class BaseUrlExtractionFilter implements Filter {
 
     String baseUrl;
-
-    public BaseUrlExtractionFilter() {
-    }
 
     @Override
     public void init(FilterConfig fc) throws ServletException {
