@@ -18,6 +18,9 @@ RepositryRestResource. I plan to keep my eye on this and see whether things get
 clearer with time, however I might steer clear of using these outside of 
 learning exercises until then.
 
+I really enjoyed the simplicity of the Mock MVC sytem to enable testing, it 
+actually a joy to use to write tests. Test report here: [This link](surefire-report.html) .
+
 Order System Requirement:
 =========================
 
